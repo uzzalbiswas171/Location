@@ -32,9 +32,7 @@ void permissionn()async{
             if (_currentAddress != null) Text(
                 _currentAddress!
             ),
-            Text("Lat == ${_currentPosition!.latitude} + Lon == ${_currentPosition!.longitude}"),
             ActionChip(
-
               onPressed: () {
                 _getCurrentLocation();
               }, label:  Text("Get location"),
@@ -44,34 +42,29 @@ void permissionn()async{
       ),
     );
   }
-
-  _getCurrentLocation() {
-    Geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-        _getAddressFromLatLng();
-      });
-    }).catchError((e) {
-      print(e);
-    });
-  }
-
-  _getAddressFromLatLng() async {
+  late Position position;
+  _getCurrentLocation() async{
+   position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+ setState(() {
+   _currentPosition = position;
+   print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh ${_currentPosition!.longitude}");
+   print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh ${_currentPosition}");
+ });
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           _currentPosition!.latitude,
           _currentPosition!.longitude
       );
-
       Placemark place = placemarks[0];
-
       setState(() {
-        _currentAddress = "${place.subLocality}, ${place.postalCode}, ${place.country}";
+        _currentAddress = "name = ${place.name}, street =${place.street.toString()}, subThoroughfare=${place.subThoroughfare}, subLocality=${place.subLocality}, administrativeArea=${place.administrativeArea}, isoCountryCode=${place.isoCountryCode},locality=${place.locality}, postalCode=${place.postalCode}, subAdministrativeArea=${place.subAdministrativeArea}, thoroughfare${place.thoroughfare}, country=${place.country},";
+        print(_currentAddress);
       });
     } catch (e) {
       print(e);
     }
+
   }
+
+
 }
